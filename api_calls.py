@@ -55,6 +55,17 @@ def process_chat(chat):
     return chat
 
 
+def get_all_chats_info():
+    result = requests.get(
+        '{}/chat/all_chats'.format(config.BOT_TOKEN)
+    )
+    result = json.loads(result.text)
+    chats = result['chats']
+    for i in range(0, len(chats)):
+        chats[i] = process_chat(chats[i])
+    return chats
+
+
 def get_chat_info(chat_id):
     chat_info = requests.get(
         '{}/chat/{}'.format(config.BOT_TOKEN, chat_id)
@@ -71,4 +82,10 @@ def update_grades_for_chat(chat_id, new_grades):
         '{}/chat/update_grades/{}'.format(config.BOT_TOKEN, chat_id),
         data=json.dumps(payload),
         headers=HEADERS
+    )
+
+
+def disable_notify_grades_for_chat(chat_id):
+    requests.put(
+        '{}/chat/disable_notify_grades/{}'.format(config.BOT_TOKEN, chat_id)
     )
