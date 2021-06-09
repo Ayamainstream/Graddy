@@ -2,10 +2,11 @@ from pprint import pprint
 
 import requests
 from bs4 import BeautifulSoup
-from config import username, password
+from SQLighter import SQLighter
+# from config import username, password
 
 
-def login_to_moodle():
+def login_to_moodle(username, password):
     url = "https://moodle.astanait.edu.kz/login/index.php"
     session = requests.Session()
     html_doc = session.get('https://moodle.astanait.edu.kz/grade/report/overview/index.php').text
@@ -23,8 +24,8 @@ def login_to_moodle():
     return session
 
 
-def get_all_grades():
-    r = login_to_moodle()
+def get_all_grades(username, password):
+    r = login_to_moodle(username, password)
     html_doc = r.get('https://moodle.astanait.edu.kz/grade/report/overview/index.php').text
     soup = BeautifulSoup(html_doc, 'html.parser')
     overview_grade = soup.find(id="overview-grade")
@@ -86,8 +87,8 @@ def get_all_grades():
     return courses
 
 
-def get_course_names():
-    r = login_to_moodle()
+def get_course_names(username, password):
+    r = login_to_moodle(username, password)
     html_doc = r.get('https://moodle.astanait.edu.kz/grade/report/overview/index.php').text
     soup = BeautifulSoup(html_doc, 'html.parser')
     overview_grade = soup.find(id="overview-grade")
@@ -96,7 +97,6 @@ def get_course_names():
         r.close()
 
     course_names = []
-
     grades_table = overview_grade.tbody
     for tr_grades in grades_table.find_all('tr', class_=""):
         course_name = tr_grades.a.text
@@ -107,8 +107,9 @@ def get_course_names():
     return course_names
 
 
-def get_grades(names):
-    r = login_to_moodle()
+def get_grades(username, password, names):
+    r = login_to_moodle(username, password)
+
     html_doc = r.get('https://moodle.astanait.edu.kz/grade/report/overview/index.php').text
     soup = BeautifulSoup(html_doc, 'html.parser')
     overview_grade = soup.find(id="overview-grade")
@@ -144,15 +145,12 @@ def get_grades(names):
     text += '\n'
     text += '\n'.join(grades)
     r.close()
-    print(text)
     return text
 
-
-def main():
-    # login_to_moodle()
-    get_grades('Discrete Mathematics | Adil Sagingaliyev')
-    # get_course_names()
-
-
-if __name__ == '__main__':
-    main()
+# def main():
+#     get_grades('Discrete Mathematics | Adil Sagingaliyev')
+#     get_course_names(username, password)
+#
+#
+# if __name__ == '__main__':
+#     main()
