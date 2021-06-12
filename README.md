@@ -1,2 +1,2 @@
 # Graddy
-# t.me/GraddyNotificationBot
+t.me/GraddyNotificationBot
